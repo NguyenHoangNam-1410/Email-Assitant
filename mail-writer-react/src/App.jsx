@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import "./App.css";
 import {
   TextField,
@@ -11,15 +11,23 @@ import {
   MenuItem,
   CircularProgress,
   Select,
+  Paper,
+  Switch,
+  CssBaseline,
+  IconButton,
 } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Brightness4, Brightness7 } from "@mui/icons-material";
 import axios from "axios";
 
 function App() {
   const [emailContent, setEmailContent] = useState("");
   const [tone, setTone] = useState("");
-  const [generateReply, setGenerateReply] = useState("");
+  const [receiver, setReceiver] = useState("");
+  const [generateAdjustment, setGenerateAdjustment] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
 
   const handleSubmit = async () => {
     if (!emailContent) {
@@ -35,16 +43,17 @@ function App() {
         {
           emailContent,
           tone,
+          receiver,
         }
       );
-      setGenerateReply(
+      setGenerateAdjustment(
         response.data && typeof response.data === "string"
           ? response.data
-          : JSON.stringify(response.data || "No reply generated.")
+          : JSON.stringify(response.data || "No adjustment generated.")
       );
     } catch (error) {
       const errorMessage =
-        error.response?.data?.message || "Failed to generate email reply.";
+        error.response?.data?.message || "Failed to generate email adjustment.";
       setError(errorMessage);
       console.error(error);
     } finally {
@@ -52,92 +61,148 @@ function App() {
     }
   };
 
+  // 🌗 Create light and dark themes
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: darkMode ? "dark" : "light",
+          primary: {
+            main: darkMode ? "#90caf9" : "#1976d2",
+          },
+          background: {
+            default: darkMode ? "#121212" : "#f5f7fa",
+            paper: darkMode ? "#1e1e1e" : "#ffffff",
+          },
+        },
+      }),
+    [darkMode]
+  );
+
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography variant="h3" component="h1" gutterBottom>
-        Email Reply Generator
-      </Typography>
-
-      <Box sx={{ mx: 3 }}>
-        <TextField
-          fullWidth
-          multiline
-          row={6}
-          variant="outlined"
-          label="Original Email Content"
-          value={emailContent || ""}
-          onChange={(e) => setEmailContent(e.target.value)}
-          sx={{ mb: 2 }}
-        />
-
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel id="tone-label">Tone (Optional)</InputLabel>
-          <Select
-            labelId="tone-label"
-            value={tone || ""}
-            onChange={(e) => setTone(e.target.value)}
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Container maxWidth="md" sx={{ py: 5 }}>
+        <Paper elevation={4} sx={{ p: 4, borderRadius: 4 }}>
+          {/* 🌙 Light/Dark Toggle */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 3,
+            }}
           >
-            <MenuItem value="">None</MenuItem>
-            <MenuItem value="professional">Professional</MenuItem>
-            <MenuItem value="casual">Casual</MenuItem>
-            <MenuItem value="friendly">Friendly</MenuItem>
-            <MenuItem value="sincere">Sincere</MenuItem>
-            <MenuItem value="luxurious">Luxurious</MenuItem>
-            <MenuItem value="funny">Funny</MenuItem>
-          </Select>
-        </FormControl>
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          disabled={!emailContent || loading}
-          fullWidth
-        >
-          {loading ? <CircularProgress size={24} /> : "Generate Reply"}
-        </Button>
-      </Box>
-      {error && (
-        <Typography color="error" sx={{ mb: 2 }}>
-          {error}
-        </Typography>
-      )}
-
-      {generateReply && (
-        <Box sx={{ mt: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Generated Reply
-          </Typography>
-          <TextField
-            fullWidth
-            multiline
-            rows={12}
-            variant="outlined"
-            value={generateReply || ""}
-            inputProps={{ readOnly: true }}
-            sx={{ mb: 2 }} // Add margin below the TextField for better spacing
-          />
-          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-            <Button
-              variant="outlined"
-              onClick={() => navigator.clipboard.writeText(generateReply)}
-              sx={{ minWidth: 150 }} // Ensure consistent button width
+            <Typography variant="h4" sx={{ fontWeight: 600 }}>
+              Email Adjustment Generator
+            </Typography>
+            <IconButton
+              onClick={() => setDarkMode(!darkMode)}
+              color="inherit"
+              sx={{ ml: 2 }}
             >
-              Copy to Clipboard
-            </Button>
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={() => {
-                setEmailContent(""); // Clear the email content
-                setGenerateReply(""); // Clear the generated reply
-              }}
-              sx={{ minWidth: 150 }} // Ensure consistent button width
-            >
-              Clear
-            </Button>
+              {darkMode ? <Brightness7 /> : <Brightness4 />}
+            </IconButton>
           </Box>
-        </Box>
-      )}
-    </Container>
+
+          <Box>
+            <TextField
+              fullWidth
+              multiline
+              rows={6}
+              variant="outlined"
+              label="Original Email Content"
+              value={emailContent}
+              onChange={(e) => setEmailContent(e.target.value)}
+              sx={{ mb: 3 }}
+            />
+
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Receiver (Optional)"
+              value={receiver}
+              onChange={(e) => setReceiver(e.target.value)}
+              sx={{ mb: 3 }}
+            />
+
+            <FormControl fullWidth sx={{ mb: 3 }}>
+              <InputLabel id="tone-label">Tone (Optional)</InputLabel>
+              <Select
+                labelId="tone-label"
+                value={tone}
+                label="Tone (Optional)"
+                onChange={(e) => setTone(e.target.value)}
+              >
+                <MenuItem value="">None</MenuItem>
+                <MenuItem value="professional">Professional</MenuItem>
+                <MenuItem value="casual">Casual</MenuItem>
+                <MenuItem value="friendly">Friendly</MenuItem>
+                <MenuItem value="sincere">Sincere</MenuItem>
+                <MenuItem value="luxurious">Luxurious</MenuItem>
+                <MenuItem value="funny">Funny</MenuItem>
+              </Select>
+            </FormControl>
+
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              disabled={!emailContent || loading}
+              fullWidth
+              sx={{ py: 1.5, fontWeight: 600 }}
+            >
+              {loading ? <CircularProgress size={24} /> : "Fix My Email"}
+            </Button>
+
+            {error && (
+              <Typography color="error" sx={{ mt: 2 }}>
+                {error}
+              </Typography>
+            )}
+          </Box>
+
+          {generateAdjustment && (
+            <Box sx={{ mt: 5 }}>
+              <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                🎯 Generated Adjustment
+              </Typography>
+              <TextField
+                fullWidth
+                multiline
+                rows={12}
+                variant="outlined"
+                value={generateAdjustment}
+                inputProps={{ readOnly: true }}
+                sx={{ mb: 2 }}
+              />
+              <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() =>
+                    navigator.clipboard.writeText(generateAdjustment)
+                  }
+                >
+                  Copy to Clipboard
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => {
+                    setEmailContent("");
+                    setGenerateAdjustment("");
+                    setReceiver("");
+                    setTone("");
+                  }}
+                >
+                  Clear All
+                </Button>
+              </Box>
+            </Box>
+          )}
+        </Paper>
+      </Container>
+    </ThemeProvider>
   );
 }
 

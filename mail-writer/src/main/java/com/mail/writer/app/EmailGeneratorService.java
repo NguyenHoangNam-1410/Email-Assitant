@@ -23,7 +23,7 @@ public class EmailGeneratorService {
         this.webClient = webClientBuilder.build();
     }
 
-    public String generateEmailReply(EmailRequest emailRequest) {
+    public String generateEmailAdjust(EmailRequest emailRequest) {
         // Build prompt
         String prompt = buildPrompt(emailRequest);
 
@@ -50,7 +50,7 @@ public class EmailGeneratorService {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(response);
             JsonNode candidatesNode = rootNode.path("candidates");
-            if (candidatesNode.isMissingNode() || !candidatesNode.isArray() || candidatesNode.size() == 0) {
+            if (candidatesNode.isMissingNode() || !candidatesNode.isArray() || candidatesNode.isEmpty()) {
                 return "Error: No candidates found in API response.";
             }
             return candidatesNode.get(0).path("content").path("parts").get(0).path("text").asText();
@@ -61,12 +61,16 @@ public class EmailGeneratorService {
 
     private String buildPrompt(EmailRequest emailRequest) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append("Generate a professional email reply for hte following email content. Please don't generate a subject line");
+        prompt.append("Fix this email ");
         if (emailRequest.getTone() != null && !emailRequest.getTone().isEmpty()) {
-            prompt.append("Use a ").append(emailRequest.getTone()).append("tone");
-
+            prompt.append("use a ").append(emailRequest.getTone()).append("tone ");
         }
+        prompt.append("for hte following email content. Please don't generate a subject line and no need to say anything outside of the email.");
         prompt.append("\nOriginal email: \n").append(emailRequest.getEmailContent());
+        if (emailRequest.getReceiver() != null && !emailRequest.getReceiver().isEmpty()) {
+            prompt.append("\nReceiver: \n").append(emailRequest.getReceiver());
+        }
+        prompt.append("\nIf the original email is unacceptable, please say Cannot fix this email.");
         return prompt.toString();
     }
 }

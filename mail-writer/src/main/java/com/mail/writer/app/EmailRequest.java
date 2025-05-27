@@ -6,5 +6,6 @@ import lombok.Data;
 public class EmailRequest {
     private String emailContent;
     private String tone; //Style of reply
+    private String receiver;
 
 }
