@@ -90,40 +90,40 @@ Chrome Extension:
 🔧 Extension Architecture
 The Chrome Extension consists of:
 
--manifest.json - Extension configuration and permissions
--content.js - Script injected into Gmail pages
--Background scripts - Handle extension lifecycle
--Gmail Integration - Detects compose boxes and injects AI functionality
+- manifest.json - Extension configuration and permissions
+- content.js - Script injected into Gmail pages
+- Background scripts - Handle extension lifecycle
+- Gmail Integration - Detects compose boxes and injects AI functionality
 
 Key Features:
 
--🎯 Smart Gmail Detection - Automatically finds compose boxes
--🔄 Real-time Content Reading - Reads your draft email content
--✨ Seamless Content Replacement - Replaces text without losing formatting
--🛡️ Error Handling - Graceful fallbacks if something goes wrong
+- 🎯 Smart Gmail Detection - Automatically finds compose boxes
+- 🔄 Real-time Content Reading - Reads your draft email content
+- ✨ Seamless Content Replacement - Replaces text without losing formatting
+- 🛡️ Error Handling - Graceful fallbacks if something goes wrong
 
 ---
 
 🔒 Security & Privacy
 
--Local Processing: All email content is processed locally through your backend
--No Data Storage: The extension doesn't store or log your email content
--Secure Communication: Uses localhost API calls to your own backend
--Minimal Permissions: Only requests necessary Gmail access permissions
+- Local Processing: All email content is processed locally through your backend
+- No Data Storage: The extension doesn't store or log your email content
+- Secure Communication: Uses localhost API calls to your own backend
+- Minimal Permissions: Only requests necessary Gmail access permissions
 
 ---
 
 🐛 Troubleshooting
 Extension Issues:
 
--Button not appearing: Refresh Gmail and ensure the extension is enabled
--"Generation failed" error: Check that your backend is running on http://localhost:8080
--Content not replacing: Try clicking in the compose box first, then click AI Update
+- Button not appearing: Refresh Gmail and ensure the extension is enabled
+- "Generation failed" error: Check that your backend is running on http://localhost:8080
+- Content not replacing: Try clicking in the compose box first, then click AI Update
 
 Backend Issues:
 
--API errors: Ensure your AI service configuration is correct
--CORS issues: Backend includes CORS configuration for localhost origins
+- API errors: Ensure your AI service configuration is correct
+- CORS issues: Backend includes CORS configuration for localhost origins
 
 ---
 
