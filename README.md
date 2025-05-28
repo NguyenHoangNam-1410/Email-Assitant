@@ -1,6 +1,6 @@
 # AI Email Adjustment Assistant
 
-This is an AI-powered email adjustment application that helps rewrite or refine email content with a chosen tone and recipient context. The application consists of a Spring Boot backend and a React frontend, and is designed to integrate with a Google Chrome Extension (coming soon 🚀).
+This is an AI-powered email adjustment application that helps rewrite or refine email content with a chosen tone and recipient context. The application consists of a Spring Boot backend and a React frontend, and is designed to integrate with a Google Chrome Extension.
 
 ---
 
