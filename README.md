@@ -29,7 +29,7 @@ This is an AI-powered email adjustment application that helps rewrite or refine 
    npm run dev
 4. The app runs on:  `http://localhost:5173`
 
- Chrome Extension Setup
+### Chrome Extension Setup
 
 1. Navigate to the chrome-extension folder in your project.
 2. Open Google Chrome and go to chrome://extensions/.
@@ -38,7 +38,7 @@ This is an AI-powered email adjustment application that helps rewrite or refine 
 5. The extension will appear in your extensions toolbar.
 Important: Make sure your backend server is running on http://localhost:8080 before using the extension.
 
-Using the Chrome Extension:
+### Using the Chrome Extension:
 
 1. Open Gmail and click "Compose" to write a new email.
 2. You'll see an "AI Update" button in the compose toolbar.
